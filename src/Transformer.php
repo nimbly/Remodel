@@ -16,15 +16,14 @@ use Remodel\Resource\NullItem;
 abstract class Transformer
 {
     /** @var array  */
-    protected $defaultIncludes = [];
+    protected $includes = [];
 
     /** @var array  */
     protected $userIncludes = [];
 
-    /** @var array  */
-    protected $userExcludes = [];
-
     /**
+     * Set user specified includes
+     * 
      * @param string|array $includes
      * @return static
      */
@@ -40,29 +39,18 @@ abstract class Transformer
     }
 
     /**
-     * @param string|array $excludes
-     * @return static
-     */
-    public function exclude($excludes)
-    {
-        if( !is_array($excludes) ){
-            $excludes = [$excludes];
-        }
-
-        $this->userExcludes = $excludes;
-
-        return $this;
-    }
-
-    /**
+     * Get the transformer's configured default includes
+     * 
      * @return array
      */
-    public function getDefaultIncludes()
+    public function getIncludes()
     {
-        return $this->defaultIncludes;
+        return $this->includes;
     }
 
     /**
+     * Get the user specificed includes
+     * 
      * @return array
      */
     public function getUserIncludes()
@@ -71,28 +59,44 @@ abstract class Transformer
     }
 
     /**
-     * @return array
+     * Return a new Item resource instance
+     * 
+     * @param mixed $data
+     * @param Transformer $transformer
+     * @return Item
      */
-    public function getUserExcludes(): array
-    {
-        return $this->userExcludes;
-    }
-
     public function item($data, Transformer $transformer)
     {
         return new Item($data, $transformer);
     }
 
+    /**
+     * Return a new NullItem resource instance
+     * 
+     * @return NullItem
+     */
     public function nullItem()
     {
         return new NullItem;
     }
 
+    /**
+     * Return a new Collection resource instance
+     * 
+     * @param \ArrayAccess $data
+     * @param Transformer $transformer
+     * @return Collection
+     */
     public function collection($data, Transformer $transformer)
     {
         return new Collection($data, $transformer);
     }
 
+    /**
+     * Return a new NullCollection resource instance
+     * 
+     * @return NullCollection
+     */
     public function nullCollection()
     {
         return new NullCollection;

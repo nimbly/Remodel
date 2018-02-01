@@ -5,23 +5,19 @@ namespace Remodel\Serializer;
 
 use Remodel\Resource\Resource;
 
-class JsonSerializer implements Serializer
+class JsonSerializer extends Serializer
 {
-    /**
-     * @var Resource
-     */
-    protected $resource;
-
+    /** @var mixed */
     protected $meta;
 
-    public function __construct(Resource $resource)
-    {
-        $this->resource = $resource;
-    }
-
+    /**
+     * Serialize the resource
+     * 
+     * @return string
+     */
     public function serialize()
     {
-        $response = ['data' => $this->resource->transform()];
+        $response = ['data' => $this->resource->toData()];
 
         if( $this->meta ){
             $response['meta'] = $this->meta;
@@ -30,9 +26,22 @@ class JsonSerializer implements Serializer
         return json_encode($response, JSON_UNESCAPED_SLASHES);
     }
 
+    /**
+     * Add meta data to the serializer
+     * 
+     * @param mixed $data
+     * @return static
+     */
     public function setMeta($data)
     {
-        $this->meta = $data;
+        if( $data instanceof Resource ){
+            $this->meta = $data->toData();
+        }
+        else {
+            $this->meta = $data;
+        }
+        
+        return $this;
     }
 
 }

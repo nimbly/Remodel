@@ -16,5 +16,5 @@ abstract class Resource
     /**
      * @return mixed
      */
-    abstract public function transform();
+    abstract public function toData();
 }

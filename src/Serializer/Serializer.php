@@ -2,8 +2,28 @@
 
 namespace Remodel\Serializer;
 
-
-interface Serializer
+/**
+ * Abstract Serliazer
+ * 
+ * @package Remodel\Serializer\Serializer
+ */
+abstract class Serializer
 {
-    public function serialize();
+    /** @var Resource */
+    protected $resource;
+
+    /**
+     * @param Resource $resource
+     */
+    public function __construct(Resource $resource)
+    {
+        $this->resource = $resource;
+    }
+
+    /**
+     * Serialize the resouce instance
+     * 
+     * @return string
+     */
+    abstract public function serialize();
 }
