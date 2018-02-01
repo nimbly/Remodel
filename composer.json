@@ -1,8 +1,12 @@
 {
     "name": "nimbly/remodel",
-    "description": "Simple JSON data transformer for API responses",
+    "description": "A simple data transformer and serilizer for your API",
     "keywords": [
-        "transformer", "response", "api", "json"
+        "transformer",
+        "response",
+        "api",
+        "json",
+        "serializer"
     ],
     "version": "1.0",
     "type": "library",
