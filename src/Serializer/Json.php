@@ -5,6 +5,10 @@ namespace Remodel\Serializer;
 
 use Remodel\Resource\Resource;
 
+/**
+ * Class Json
+ * @package Remodel\Serializer
+ */
 class Json extends Serializer
 {
     /** @var mixed */

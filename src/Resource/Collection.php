@@ -1,6 +1,6 @@
 <?php
 
-namespace Remode\Resource;
+namespace Remodel\Resource;
 
 
 use Remodel\Transformer;
@@ -8,7 +8,7 @@ use Remodel\Transformer;
 /**
  * A resource Collection represents a collection or set of resource Items.
  * 
- * @package Remodel\Resource\Collection
+ * @package Remodel\Resource
  */
 class Collection extends Resource
 {

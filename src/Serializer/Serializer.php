@@ -2,10 +2,12 @@
 
 namespace Remodel\Serializer;
 
+use Remodel\Resource\Resource;
+
 /**
- * Abstract Serliazer
+ * Abstract Serializer
  * 
- * @package Remodel\Serializer\Serializer
+ * @package Remodel\Serializer
  */
 abstract class Serializer
 {

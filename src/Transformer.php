@@ -27,7 +27,7 @@ abstract class Transformer
      * @param string|array $includes
      * @return static
      */
-    public function include($includes)
+    public function setIncludes($includes)
     {
         if( !is_array($includes) ){
             $includes = [$includes];

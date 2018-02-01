@@ -8,7 +8,7 @@ use Remodel\Transformer;
 /**
  * A resource Item represents a single instance of a transformed object.
  * 
- * @package Remodel\Resource\Item
+ * @package Remodel\Resource
  */
 class Item extends Resource
 {
@@ -33,7 +33,7 @@ class Item extends Resource
         $data = $this->transformer->transform($this->data);
 
         // Get needed includes
-        $includes = array_unique(array_merge($this->transformer->getIncludes(), $this->transformer->getUserIncludes()));
+        $includes = $this->mapIncludes();
 
         // Process includes
         if( !empty($includes) ){
@@ -47,15 +47,14 @@ class Item extends Resource
      * Process all the includes defined for this transformer.
      * 
      * @param array $includes
+     * @return array
      */
     protected function processIncludes($includes)
     {
-        $mappedIncludes = $this->mapIncludes($includes);
-
         $data = [];
 
         // Process the includes
-        foreach( $mappedIncludes as $include => $nested ){
+        foreach( $includes as $include => $nested ){
 
             if( method_exists($this->transformer, $include) ){
 
@@ -71,24 +70,27 @@ class Item extends Resource
                         $resource->transformer->include($nested);
                     }
 
-                    $data[$include] = $resource->transform();
+                    $data[$include] = $resource->toData();
                 }
                 else {
                     $data[$include] = $resource;
                 }
             }
         }
+
+        return $data;
     }
 
     /**
      * Map the includes into array indexed by top-level include referencing the nested
      * includes (if any).
      * 
-     * @param array $includes
      * @return array
      */
-    private function mapIncludes($includes)
+    private function mapIncludes()
     {
+        $includes = array_unique(array_merge($this->transformer->getIncludes(), $this->transformer->getUserIncludes()));
+
         $mappedIncludes = [];
 
         // Re-work the includes, indexed by top-level referencing the nested includes
@@ -104,7 +106,7 @@ class Item extends Resource
             }
 
             // This index doesn't exist yet, create it and set it to an empty array
-            if( array_key_exists($index, $filteredIncludes) === false ){
+            if( array_key_exists($index, $mappedIncludes) === false ){
                 $mappedIncludes[$index] = [];
             }
 

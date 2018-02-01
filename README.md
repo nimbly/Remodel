@@ -12,9 +12,9 @@ composer require nimbly/remodel
 Create a transformer for a model that extends the ```Remodel\Transformer``` abstract.
 
 ```php
-class UserTransform extends Remodel\Transformer
+class UserTransform extends \Remodel\Transformer
 {
-    public function transform(App\Models\User $user)
+    public function transform(\App\Models\User $user)
     {
         return [
             'id' => (int) $user->id,
@@ -35,8 +35,8 @@ Transform a user object into a JSON response.
 
 ```php
 $user = App\Models\User::find($id);
-$resource = new Remodel\Resource\Item($user, new UserTransformer);
-$response = new Remodel\Serializer\Json($resource);
+$resource = new \Remodel\Resource\Item($user, new UserTransformer);
+$response = new \Remodel\Serializer\Json($resource);
 ```
 
 ```php
@@ -64,11 +64,11 @@ Remodel will then look for a method of the same name as the
 include to do the included transformation for you.
 
 ```php
-class BookTransformer extends Remodel\Transformer
+class BookTransformer extends \Remodel\Transformer
 {
     protected $includes = ['author'];
 
-    public function transform(App\Models\Book $book)
+    public function transform(\App\Models\Book $book)
     {
         return [
             'id' => (int) $book->id,
@@ -81,7 +81,7 @@ class BookTransformer extends Remodel\Transformer
 
     public function author(App\Models\Book $book)
     {
-        return new Remodel\Resource\Item($book->author, new App\Transformers\AuthorTransformer);
+        return new \Remodel\Resource\Item($book->author, new App\Transformers\AuthorTransformer);
     }
 }
 ```
@@ -90,7 +90,7 @@ class BookTransformer extends Remodel\Transformer
 Now let's create the Transformer for our Author object.
 
 ```php
-class AuthorTransformer extends Remodel\Transformer
+class AuthorTransformer extends \Remodel\Transformer
 {
     public function transform(App\Models\Author $author)
     {
@@ -137,11 +137,11 @@ You can pass run-time user supplied includes into the Transformer instance.
 
 ```php
 $transformer = new BookTransformer;
-$transformer->include(['author', 'publisher']);
+$transformer->setIncludes(['author', 'publisher']);
 
 // OR
 
-$transformer = (new BookTransformer)->include(['author', 'publisher']);
+$transformer = (new BookTransformer)->setIncludes(['author', 'publisher']);
 ```
 
 ## Using the Serializer
