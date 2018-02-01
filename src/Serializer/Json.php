@@ -5,7 +5,7 @@ namespace Remodel\Serializer;
 
 use Remodel\Resource\Resource;
 
-class JsonSerializer extends Serializer
+class Json extends Serializer
 {
     /** @var mixed */
     protected $meta;
