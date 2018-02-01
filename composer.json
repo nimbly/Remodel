@@ -1,5 +1,5 @@
 {
-    "name": "nimbly/remodel",
+    "name": "nimbly\/remodel",
     "description": "A simple data transformer and serilizer for your API",
     "keywords": [
         "transformer",
