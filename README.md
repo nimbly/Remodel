@@ -10,8 +10,7 @@ composer require nimbly/remodel
 ## Basic usage
 
 Create a transformer that extends the ```Remodel\Transformer``` abstract. The ```transform``` method is required and should accept
-a single *thing* to transform. This *thing* could be a model object or a simple associative array - it doesn't matter. Inside this method
-you will define and return the transformed data as an associative array.
+a single *thing* to transform. This *thing* could be a model object or a simple associative array or something else entirely - it really doesn't matter. Inside this method you will define and return the transformed data as an associative array.
 
 
 For example:
@@ -128,28 +127,16 @@ $transformer = (new BookTransformer)->setIncludes(['author', 'publisher']);
 A Transformer merely transforms your objects into a single associative array. Converting that associative array into
 something more API friendly (json, xml, etc) requires a Serializer.
 
+Remodel includes a simple JSON serializer that wraps your Resource data in a root level element called **data**. It also
+provides **setMeta** and **addMeta** methods so that you may pass in additional meta data with your response. It then uses
+the ```json_encode``` function to convert to JSON. The JsonSerializer implements the ```JsonSerializable``` interface.
+
 ```php
-$resource = new \Remodel\Resource\Item($user, new UserTransformer);
-$response = new \Remodel\Serializer\Json($resource);
+$resource = new \Remodel\Resource\Collection($users, new UserTransformer);
+$response = new \Remodel\Serializer\JsonSerializer($resource);
+$response->addMeta($pagination);
 echo($response->serialize());
 ```
-
-Will produce
-
-
-```json
-{
-    "id": 345678,
-    "name": "John Doe",
-    "email": "jdoe@example.com",
-    "created_at": "2018-01-31 14:52:09-08:00"
-}
-```
-
-Remodel includes a simple JSON serializer that wraps your Resource data in a root level element called **data**. It also
-provides a **setMeta** method so that you may pass in additional meta data with your response. It then uses the ```json_encode``` function to convert to JSON.
-
-For example
 ```json
 {
     "data": [

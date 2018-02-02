@@ -23,4 +23,12 @@ abstract class Resource
      * @return mixed
      */
     abstract public function toData();
+
+    /**
+     * @return Transformer
+     */
+    public function getTransformer()
+    {
+        return $this->transformer;
+    }
 }

@@ -67,7 +67,7 @@ class Item extends Resource
                 if( $resource instanceof Resource ){
 
                     if( $resource->transformer ){
-                        $resource->transformer->include($nested);
+                        $resource->transformer->setIncludes($nested);
                     }
 
                     $data[$include] = $resource->toData();

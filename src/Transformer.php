@@ -30,7 +30,7 @@ abstract class Transformer
     public function setIncludes($includes)
     {
         if( !is_array($includes) ){
-            $includes = [$includes];
+            $includes = array_map('trim', explode(',', $includes));
         }
 
         $this->userIncludes = $includes;
