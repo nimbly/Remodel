@@ -1,5 +1,5 @@
 # Remodel
-Simple data transformer and serializer for your API responses
+A simple data transformer and serializer for your API responses
 
 ## Installation
 
@@ -9,11 +9,9 @@ composer require nimbly/remodel
 
 ## Basic usage
 
-Create a transformer that extends the ```Remodel\Transformer``` abstract. The ```transform``` method is required and should accept
+Create a transformer that extends the ```\Remodel\Transformer``` abstract. The ```transform``` method is required and should accept
 a single *thing* to transform. This *thing* could be a model object or a simple associative array or something else entirely - it really doesn't matter. Inside this method you will define and return the transformed data as an associative array.
 
-
-For example:
 
 ```php
 class UserTransform extends \Remodel\Transformer
@@ -29,26 +27,42 @@ class UserTransform extends \Remodel\Transformer
     }
 }
 ```
-##
 
-Now, create a resource for the object being transformed.
+With our ```UserTransformer``` now defined, let's pull a user from the database, transform it, and serialize it. In order to transform the user data, we must map the data to be transformed to a specific transformer.
+
+To do this we create a new ```Item``` resource since we are transforming a single item. If this were a collection of users, we would use the ```Collection``` resource.
 
 ```php
+// Grab the user from the database
+$user = User::find($id);
+
+// Create the transformer resource
 $resource = new \Remodel\Resource\Item($user, new UserTransformer);
 ```
-Good job! You have now created a simple transformer. Let's dig deeper now.
+
+To convert the resource into an API friendly response, we pass it into a serializer. **Remodel** comes with a ```JsonSerializer``` that converts a resource into a JSON string. You can create your own custom serializer by extending the ```\Remodel\Serialzier\Serializer``` abstract.
+
+```php
+// Pass transformer resource into serializer
+$serializer = new \Remodel\Serializer\JsonSerializer($resource);
+
+// Prints out JSON
+echo $serializer->serialize();
+```
+
+Good job! You have now created a simple transformer that dumps out JSON. Let's dig deeper now.
 
 ## Including related data automatically
-What good is a transformer if it can only transform the object you've given it? What if you need to transform a book whose author is stored in a separate model instance and needs its own transformation.
+What good is a transformer if it can only transform the object you've given it? Real use cases are far more complex. What if you need to transform a book whose author is stored in a separate model instance and needs its own transformation?
 
-Add the ```$includes``` array property on the transformer containing all the default includes you would like.
+Add the protected ```$includes``` array property on the transformer containing all the default includes you would like. Remodel will then look for a method of the same name as the include to do the included transformation for you.
 
-Remodel will then look for a method of the same name as the include to do the included transformation for you.
+The method should return a Resource object, a raw associative array, or null. If the method returns null, the property will **not** be included.
 
 ```php
 class BookTransformer extends \Remodel\Transformer
 {
-    protected $includes = ['author'];
+    protected $includes = ['author', 'reviews'];
 
     public function transform(Book $book)
     {
@@ -61,9 +75,25 @@ class BookTransformer extends \Remodel\Transformer
         ];
     }
 
+    /**
+     * 
+     * Remodel will call this method automatically for you since it's in the list of
+     * $includes above.
+     * 
+     */
     public function author(Book $book)
     {
         return new \Remodel\Resource\Item($book->author, new App\Transformers\AuthorTransformer);
+    }
+
+    /**
+     * 
+     * Return an array of reviews
+     * 
+     */
+    public function reviews(Book $book)
+    {
+        return new \Remodel\Resource\Collection($book->reviews, new App\Transformers\ReviewTransformer);
     }
 }
 ```
@@ -164,3 +194,27 @@ echo($response->serialize());
 
 ## Extending the Serializer
 Create your own custom Serializer by extending ```Remodel\Serializer\Serializer``` abstract.
+
+
+## Glossary
+
+### Transformer
+A transformer takes an object (or an associative array), transforms it into an associative array, and returns it.
+
+### Resource
+A resource maps data to a specific transformer to be applied to the data.
+
+* **Item**
+A single instance of data.
+
+* **Collection**
+A collection or set of data.
+
+* **NullItem**
+Use this resource if you would like a literal ```null``` assigned to an included resource.
+
+* **NullCollection**
+Use this resource if you would like a literal empty array ```[]``` assighed to an included resource.
+
+### Serializer
+Takes resource and serializes data into a specific format (eg, JSON or XML)
