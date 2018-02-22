@@ -141,7 +141,7 @@ $collection = new \Remodel\Resource\Collection($books, new BookTransformer);
 What if you don't always need a related resource included with every transformation? Maybe it's a resource
 provided only when the requesting client needs it?
 
-You can pass run-time user supplied includes into the Transformer instance.
+You can pass run-time user supplied includes into the Transformer instance using the ```setIncludes``` method.
 
 ```php
 $transformer = new BookTransformer;
