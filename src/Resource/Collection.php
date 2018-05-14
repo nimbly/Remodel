@@ -13,10 +13,10 @@ use Remodel\Transformer;
 class Collection extends Resource
 {
     /**
-     * @param \ArrayAccess $data
+     * @param array $data
      * @param Transformer $transformer
      */
-    public function __construct(\ArrayAccess $data, Transformer $transformer)
+    public function __construct($data, Transformer $transformer)
     {
         $this->data = $data;
         $this->transformer = $transformer;
