@@ -2,6 +2,7 @@
 
 namespace Remodel\Resource;
 
+
 /**
  * A resource NullItem represents an Item instance that is null
  * 
@@ -10,7 +11,7 @@ namespace Remodel\Resource;
 class NullItem extends Resource
 {
     /**
-     * @return null
+     * @inheritDoc
      */
     public function toData()
     {

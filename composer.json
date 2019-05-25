@@ -1,17 +1,15 @@
 {
     "name": "nimbly\/remodel",
-    "description": "A simple data transformer and serializer for your API responses",
+    "description": "A simple data transformer for your API responses",
     "keywords": [
-        "transformer",
-        "response",
         "api",
-        "json",
-        "serializer"
+        "response",
+        "transformer"        
     ],
     "version": "1.2",
     "type": "library",
     "require": {
-        "php": "~5.4 || ~7.0"
+        "php": ">=7.2"
     },
     "license": "MIT",
     "authors": [
@@ -30,5 +28,18 @@
         "psr-4": {
             "Remodel\\": "src\/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Remodel\\Test\\": "tests\/"
+        }
+    },
+    "require-dev": {
+        "vimeo/psalm": "^3.0",
+        "phpunit/phpunit": "^8.0",
+        "php-coveralls/php-coveralls": "^2.1",
+        "mtdowling/jmespath.php": "^2.4",
+        "fzaninotto/faker": "^1.8",
+        "symfony/var-dumper": "^4.2"
     }
 }

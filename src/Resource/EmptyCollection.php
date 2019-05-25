@@ -2,15 +2,16 @@
 
 namespace Remodel\Resource;
 
+
 /**
- * A resource NullCollection represents an empty collection
+ * A resource EmptyCollection represents an empty array.
  * 
  * @package Remode\Resource
  */
-class NullCollection extends Resource
+class EmptyCollection extends Resource
 {
     /**
-     * @return array
+     * @inheritDoc
      */
     public function toData()
     {

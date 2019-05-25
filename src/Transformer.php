@@ -3,31 +3,40 @@
 namespace Remodel;
 
 use Remodel\Resource\Collection;
+use Remodel\Resource\EmptyObject;
 use Remodel\Resource\Item;
-use Remodel\Resource\NullCollection;
+use Remodel\Resource\EmptyCollection;
 use Remodel\Resource\NullItem;
 
 /**
  * Class Transformer
  * @package Remodel
- *
- * @method transform(mixed $data)
+ * 
+ * @method array transform(mixed $object)
  */
 abstract class Transformer
 {
-    /** @var array  */
-    protected $includes = [];
+    /**
+     * Default includes.
+     *
+     * @var array
+     */
+    protected $defaultIncludes = [];
 
-    /** @var array  */
+    /**
+     * User provided includes.
+     *
+     * @var array
+     */
     protected $userIncludes = [];
 
     /**
-     * Set user specified includes
+     * Set user specified includes.
      * 
      * @param string|array $includes
-     * @return static
+     * @return Transformer
      */
-    public function setIncludes($includes)
+    public function setIncludes($includes): Transformer
     {
         if( !is_array($includes) ){
             $includes = array_map('trim', explode(',', $includes));
@@ -39,66 +48,71 @@ abstract class Transformer
     }
 
     /**
-     * Get the transformer's configured default includes
+     * Get the transformer's configured default includes.
      * 
      * @return array
      */
-    public function getIncludes()
+    public function getDefaultIncludes(): array
     {
-        return $this->includes;
+        return $this->defaultIncludes;
     }
 
     /**
-     * Get the user specificed includes
+     * Get the user specificed includes.
      * 
      * @return array
      */
-    public function getUserIncludes()
+    public function getUserIncludes(): array
     {
         return $this->userIncludes;
     }
 
     /**
-     * Return a new Item resource instance
+     * Return a new Item resource instance.
      * 
      * @param mixed $data
      * @param Transformer $transformer
      * @return Item
      */
-    public function item($data, Transformer $transformer)
+    public function item($data, Transformer $transformer): Item
     {
         return new Item($data, $transformer);
     }
 
     /**
-     * Return a new NullItem resource instance
+     * Return a new NullItem resource instance.
      * 
      * @return NullItem
      */
-    public function nullItem()
+    public function nullItem(): NullItem
     {
         return new NullItem;
     }
 
     /**
-     * Return a new Collection resource instance
+     * Return a new Collection resource instance.
      * 
-     * @param \ArrayAccess $data
+     * @param \Traversable|array $data
      * @param Transformer $transformer
      * @return Collection
      */
-    public function collection($data, Transformer $transformer)
+    public function collection($data, Transformer $transformer): Collection
     {
         return new Collection($data, $transformer);
     }
 
+    public function emptyObject(): EmptyObject
+    {
+        return new EmptyObject;
+    }
+
     /**
-     * Return a new NullCollection resource instance
+     * Return a new NullCollection resource instance.
      * 
      * @return NullCollection
      */
-    public function nullCollection()
+    public function emptyCollection(): EmptyCollection
     {
-        return new NullCollection;
+        return new EmptyCollection;
     }
 }
