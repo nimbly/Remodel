@@ -1,16 +1,16 @@
 <?php
 
-namespace Remodel\Resource;
+namespace Remodel\Subjects;
 
 
 use Remodel\Transformer;
 
 /**
- * Class Resource
+ * Class Subject
  * 
- * @package Remodel\Resource
+ * @package Remodel\Subject
  */
-abstract class Resource
+abstract class Subject
 {
     /**
      * Data to transform.
@@ -27,11 +27,11 @@ abstract class Resource
     protected $transformer;
 
     /**
-     * Convert resource into data.
+     * Remodel subject(s) into desired output.
      *
      * @return mixed|null
      */
-    abstract public function toData();
+    abstract public function remodel();
 
     /**
      * Get the transformer instance.
@@ -47,11 +47,13 @@ abstract class Resource
      * Map the includes (default and user-provided) into array indexed by top-level include referencing the nested
      * includes (if any).
      * 
-     * @return array
+     * @param array<string> $defaultIncludes
+     * @param array<string> $userIncludes
+     * @return array<string, array<string>>
      */
     protected function mapIncludes(array $defaultIncludes, array $userIncludes): array
     {
-        $includes = array_unique(array_merge($defaultIncludes, $userIncludes));
+        $includes = \array_unique(\array_merge($defaultIncludes, $userIncludes));
 
         $mappedIncludes = [];
 
@@ -59,22 +61,22 @@ abstract class Resource
         foreach( $includes as $include ){
 
             // Does this include reference a nested-include
-            if( ($pos = strpos($include, '.')) !== false ){
-                $index = substr($include, 0, $pos);
-                $nestedInclude = substr($include, $pos+1);
+            if( ($pos = \strpos($include, '.')) !== false ){
+                $index = \substr($include, 0, $pos);
+                $nestedInclude = \substr($include, $pos+1);
             } else {
                 $index = $include;
                 $nestedInclude = null;
             }
 
             // This index doesn't exist yet, create it and set it to an empty array
-            if( array_key_exists($index, $mappedIncludes) === false ){
+            if( \array_key_exists($index, $mappedIncludes) === false ){
                 $mappedIncludes[$index] = [];
             }
 
             // We have a nested include, add it to the array
             if( $nestedInclude &&
-                in_array($nestedInclude, $mappedIncludes[$index]) === false ){
+                \in_array($nestedInclude, $mappedIncludes[$index]) === false ){
                 $mappedIncludes[$index][] = $nestedInclude;
             }
         }
@@ -98,24 +100,24 @@ abstract class Resource
 
             $includeMethod = "{$include}Include";
 
-            if( method_exists($this->transformer, $includeMethod) ){
+            if( \method_exists($this->transformer, $includeMethod) ){
 
-                $resource = \call_user_func_array([$this->transformer, $includeMethod], [$object]);
+                $subject = \call_user_func([$this->transformer, $includeMethod], $object);
 
-                if( $resource === null ){
+                if( $subject === null ){
                     continue;
                 }
 
-                if( $resource instanceof static ){
+                if( $subject instanceof static ){
 
-                    if( $resource->transformer ){
-                        $resource->transformer->setIncludes($nested);
+                    if( $subject->transformer ){
+                        $subject->transformer->setIncludes($nested);
                     }
 
-                    $data[$include] = $resource->toData();
+                    $data[$include] = $subject->remodel();
                 }
                 else {
-                    $data[$include] = $resource;
+                    $data[$include] = $subject;
                 }
             }
         }

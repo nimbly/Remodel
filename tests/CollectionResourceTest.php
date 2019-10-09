@@ -4,12 +4,12 @@ namespace Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Remodel\CallableTransformer;
-use Remodel\Resource\Collection;
+use Remodel\Subjects\Collection;
 
 /**
- * @covers Remodel\Resource\Collection
- * @covers Remodel\Resource\Item
- * @covers Remodel\Resource\Resource
+ * @covers Remodel\Subjects\Collection
+ * @covers Remodel\Subjects\Item
+ * @covers Remodel\Subjects\Subject
  * @covers Remodel\CallableTransformer
  * @covers Remodel\Transformer
  */
@@ -43,7 +43,7 @@ class CollectionResourceTest extends TestCase
             })
         );
 
-        $this->assertTrue(is_array($collection->toData()));
-        $this->assertTrue(is_array($collection->toData()[0]));
+        $this->assertTrue(\is_array($collection->remodel()));
+        $this->assertTrue(\is_array($collection->remodel()[0]));
     }
 }

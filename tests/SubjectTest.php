@@ -4,18 +4,18 @@ namespace Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Remodel\CallableTransformer;
-use Remodel\Resource\Item;
+use Remodel\Subjects\Item;
 use Remodel\Transformer;
 
 /**
- * @covers Remodel\Resource\Resource
- * @covers Remodel\Resource\Item
+ * @covers Remodel\Subjects\Subject
+ * @covers Remodel\Subjects\Item
  * @covers Remodel\CallableTransformer
  * @covers Remodel\Transformer
  */
-class ResourceResourceTest extends TestCase
+class SubjectTest extends TestCase
 {
-    public function test_resource_abstract_get_transformer()
+    public function test_subject_abstract_get_transformer()
     {
         $item = new Item(
             [
@@ -32,6 +32,9 @@ class ResourceResourceTest extends TestCase
             })
         );
 
-        $this->assertTrue($item->getTransformer() instanceof Transformer);
+        $this->assertInstanceOf(
+            Transformer::class,
+            $item->getTransformer()
+        );
     }
 }

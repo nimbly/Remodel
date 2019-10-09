@@ -3,17 +3,17 @@
 namespace Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Remodel\Resource\EmptyCollection;
+use Remodel\Subjects\EmptyCollection;
 
 /**
- * @covers Remodel\Resource\EmptyCollection
+ * @covers Remodel\Subjects\EmptyCollection
  */
 class ResourceEmptyCollectionTest extends TestCase
 {
     public function test_empty_collection_transformers_to_empty_array()
     {
         $emptyCollection = new EmptyCollection;
-        $this->assertTrue(is_array($emptyCollection->toData()));
-        $this->assertEmpty($emptyCollection->toData());
+        $this->assertTrue(\is_array($emptyCollection->remodel()));
+        $this->assertEmpty($emptyCollection->remodel());
     }
 }

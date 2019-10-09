@@ -1,16 +1,16 @@
 <?php
 
-namespace Remodel\Resource;
+namespace Remodel\Subjects;
 
 
 use Remodel\Transformer;
 
 /**
- * A resource Item represents a single instance of a transformed object.
+ * An Item represents a single instance of something.
  * 
- * @package Remodel\Resource
+ * @package Remodel\Subject
  */
-class Item extends Resource
+class Item extends Subject
 {
     /**
      * @param mixed $data
@@ -25,10 +25,18 @@ class Item extends Resource
     /**
      * @inheritDoc
      */
-    public function toData()
+    public function remodel()
     {
         // Transform the object
-        $data = $this->transformer->transform($this->data);
+        if( \method_exists($this->transformer, 'transform') ){
+            /**
+             * @psalm-suppress InvalidArgument
+             */            
+            $data = \call_user_func([$this->transformer, 'transform'], $this->data);
+        }
+        else {
+            return null;
+        }
 
         // Get needed includes
         $includes = $this->mapIncludes(
@@ -38,7 +46,7 @@ class Item extends Resource
 
         // Process includes
         if( !empty($includes) ){
-            $data = array_merge($data, $this->processIncludes($this->data, $includes));
+            $data = \array_merge($data, $this->processIncludes($this->data, $includes));
         }
 
         return $data;

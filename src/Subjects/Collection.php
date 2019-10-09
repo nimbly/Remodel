@@ -1,19 +1,20 @@
 <?php
 
-namespace Remodel\Resource;
+namespace Remodel\Subjects;
 
 
 use Remodel\Transformer;
+use Traversable;
 
 /**
- * A resource Collection represents a collection or set of resource Items.
+ * A Collection represents a collection or set of subject Items.
  * 
- * @package Remodel\Resource
+ * @package Remodel\Subject
  */
-class Collection extends Resource
+class Collection extends Subject
 {
     /**
-     * @param \Traversable|array $data
+     * @param Traversable|array $data
      * @param Transformer $transformer
      */
     public function __construct($data, Transformer $transformer)
@@ -22,27 +23,22 @@ class Collection extends Resource
         $this->transformer = $transformer;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function toData()
-    {
-        $transformedData = [];
-        foreach( $this->data as $data ){
-            $transformedData[] = (new Item($data, $this->transformer))->toData();
-        }
-
-        return $transformedData;
-    }
-
-    public function toData2()
+    public function remodel()
     {
         $transformedData = [];
 
-        foreach( $this->data as $object ){
+        foreach( $this->data as $subject ){
 
             // Transform the object
-            $data = $this->transformer->transform($object);
+            if( \method_exists($this->transformer, 'transform') ){
+                /**
+                 * @psalm-suppress InvalidArgument
+                 */
+                $data = \call_user_func([$this->transformer, 'transform'], $subject);
+            }
+            else {
+                continue;
+            }
 
             // Get needed includes
             $includes = $this->mapIncludes(
@@ -52,7 +48,7 @@ class Collection extends Resource
 
             // Process includes
             if( !empty($includes) ){
-                $data = \array_merge($data, $this->processIncludes($object, $includes));
+                $data = \array_merge($data, $this->processIncludes($subject, $includes));
             }
 
             $transformedData[] = $data;

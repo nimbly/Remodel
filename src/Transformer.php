@@ -2,17 +2,18 @@
 
 namespace Remodel;
 
-use Remodel\Resource\Collection;
-use Remodel\Resource\EmptyObject;
-use Remodel\Resource\Item;
-use Remodel\Resource\EmptyCollection;
-use Remodel\Resource\NullItem;
+use Remodel\Subjects\Collection;
+use Remodel\Subjects\EmptyCollection;
+use Remodel\Subjects\EmptyObject;
+use Remodel\Subjects\Item;
+use Remodel\Subjects\NullItem;
+use Traversable;
 
 /**
  * Class Transformer
  * @package Remodel
  * 
- * @method array transform(mixed $object)
+ * @method transform($thing): array
  */
 abstract class Transformer
 {
@@ -36,10 +37,10 @@ abstract class Transformer
      * @param string|array $includes
      * @return Transformer
      */
-    public function setIncludes($includes): Transformer
+    public function addIncludes($includes): Transformer
     {
-        if( !is_array($includes) ){
-            $includes = array_map('trim', explode(',', $includes));
+        if( !\is_array($includes) ){
+            $includes = \array_map('trim', \explode(',', $includes));
         }
 
         $this->userIncludes = $includes;
@@ -68,7 +69,7 @@ abstract class Transformer
     }
 
     /**
-     * Return a new Item resource instance.
+     * Return a new Item subject instance.
      * 
      * @param mixed $data
      * @param Transformer $transformer
@@ -80,7 +81,7 @@ abstract class Transformer
     }
 
     /**
-     * Return a new NullItem resource instance.
+     * Return a new NullItem subject instance.
      * 
      * @return NullItem
      */
@@ -90,9 +91,9 @@ abstract class Transformer
     }
 
     /**
-     * Return a new Collection resource instance.
+     * Return a new Collection subject instance.
      * 
-     * @param \Traversable|array $data
+     * @param Traversable|array $data
      * @param Transformer $transformer
      * @return Collection
      */
@@ -101,15 +102,20 @@ abstract class Transformer
         return new Collection($data, $transformer);
     }
 
+    /**
+     * Return a new empty object instance.
+     *
+     * @return EmptyObject
+     */
     public function emptyObject(): EmptyObject
     {
         return new EmptyObject;
     }
 
     /**
-     * Return a new NullCollection resource instance.
+     * Return a new EmptyCollection subject instance.
      * 
-     * @return NullCollection
+     * @return EmptyCollection
      */
     public function emptyCollection(): EmptyCollection
     {

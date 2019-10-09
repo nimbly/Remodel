@@ -1,5 +1,5 @@
 # Remodel
-A simple data transformer for your API responses
+A simple data transformer for your API responses.
 
 ## Installation
 
@@ -10,7 +10,8 @@ composer require nimbly/remodel
 ## Basic usage
 
 Create a transformer that extends the ```\Remodel\Transformer``` abstract. The ```transform``` method is required and should accept
-a single *thing* to transform. This *thing* could be a model object or a simple associative array or something else entirely - it really doesn't matter. Inside this method you will define and return the transformed data as an associative array.
+a single *thing* to transform. This *thing* could be a model object or a simple associative array or something else entirely - it really doesn't matter.
+Inside this method you will define and return the transformed data as an associative array.
 
 
 ```php
@@ -18,13 +19,13 @@ use Remodel\Transformer;
 
 class UserTransform extends Transformer
 {
-    public function transform(User $user)
+    public function transform(User $user): array
     {
         return [
             'id' => (int) $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'created_at' => date('c', $user->created_at),
+            'created_at' => date('c', $user->created_at)
         ];
     }
 }
@@ -32,17 +33,18 @@ class UserTransform extends Transformer
 
 With our ```UserTransformer``` now defined, let's pull a user from the database and transform it. In order to transform the user data, we must map the data to be transformed to a specific transformer.
 
-To do this we create a new ```Item``` resource since we are transforming a single item. If this were a collection of users, we would use the ```Collection``` resource.
+To do this we create a new ```Item``` subject since we are transforming a single item. If this were a collection of users, we would use the ```Collection``` subject.
 
 ```php
 // Grab the user from the database
-$user = User::find($id);
+$user = App\Models\User::find($id);
 
-// Create the transformer resource
-$resource = new Item($user, new UserTransformer);
+// Create a new Item subject using the UserTransformer
+$subject = new Remodel\Subjects\Item($user, new UserTransformer);
 ```
 
 ## Including related data automatically
+
 What good is a transformer if it can only transform the object you've given it? Real use cases are far more complex.
 What if you need to transform a book whose author is stored in a separate model instance and needs its own transformation?
 What if we need the most recent user reviews posted about the book?
@@ -50,21 +52,19 @@ What if we need the most recent user reviews posted about the book?
 Add the protected ```$defaultIncludes``` array property on the transformer containing all the default includes you would like.
 Remodel will then look for a method on the transformer with name "{include}Include". For example:
 
-The method should return a Resource object, a raw associative array, or null. If the method returns null, the property will **not** be included.
-
 ```php
 class BookTransformer extends Transformer
 {
     protected $defaultIncludes = ['author', 'reviews'];
 
-    public function transform(Book $book)
+    public function transform(Book $book): array
     {
         return [
             'id' => (int) $book->id,
             'title' => $book->title,
             'genre' => $book->genre,
             'isbn' => $book->isbn,
-            'published_at' => date('c', $book->published_at),
+            'published_at' => date('c', $book->published_at)
         ];
     }
 
@@ -74,17 +74,17 @@ class BookTransformer extends Transformer
      * $defaultIncludes above.
      * 
      */
-    public function authorInclude(Book $book)
+    public function authorInclude(Book $book): Subject
     {
         return new Item($book->author, new AuthorTransformer);
     }
 
     /**
      * 
-     * Return an array of reviews
+     * Return an array of reviews.
      * 
      */
-    public function reviewsInclude(Book $book)
+    public function reviewsInclude(Book $book): Subject
     {
         return new Collection($book->reviews, new ReviewTransformer);
     }
@@ -94,49 +94,51 @@ class BookTransformer extends Transformer
 Now let's create the Transformer for our Author object.
 
 ```php
-class AuthorTransformer extends \Remodel\Transformer
+class AuthorTransformer extends Transformer
 {
     public function transform(Author $author)
     {
         return [
             'id' => (int) $author->id,
-            'name' => $author->name,
+            'name' => $author->name
         ];
     }
 }
 ```
 
 ## Nested includes
+
 What if you need an optional include on another include? For example, if the Author also has an Address object that is not included by default?
 
 You can nest includes by using a dot notation.
 
 ```php
-protected $includes = ['author.address'];
+protected $defaultIncludes = ['author.address'];
 ```
 This will include an Author and its Address object.
 
 You can nest as many includes as you'd like and to an unlimited depth.
 
 ```php
-protected $includes = ['comments.user.profile'];
+protected $defaultIncludes = ['comments.user.profile'];
 ```
 
-## Transforming a collection of resources
+## Transforming a collection of subjects
 
-You can transform a collection of resources in a similar fashion.
+You can transform a collection or array of subjects in a similar fashion.
 
 ```php
-$collection = new \Remodel\Resource\Collection($books, new BookTransformer);
+$collection = new Remodel\Subjects\Collection($books, new BookTransformer);
 ```
 
 ## Adding includes at run time
-What if you don't always need a related resource included with every transformation? Maybe it's a resource
+
+What if you don't always need a related subject included with every transformation? Maybe it's a resource
 provided only when the requesting client needs it?
 
-You can pass run-time user supplied includes into the Transformer instance using the ```setIncludes``` method.
+You can pass run-time user supplied includes into the Transformer instance using the ```addIncludes``` method.
 
 ```php
 $transformer = new BookTransformer;
-$transformer->setIncludes(['author', 'publisher']);
+$transformer->addIncludes(['author', 'publisher']);
 ```

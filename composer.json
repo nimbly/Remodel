@@ -1,12 +1,11 @@
 {
-    "name": "nimbly\/remodel",
+    "name": "nimbly/remodel",
     "description": "A simple data transformer for your API responses",
     "keywords": [
         "api",
         "response",
         "transformer"        
     ],
-    "version": "1.2",
     "type": "library",
     "require": {
         "php": ">=7.2"
@@ -18,24 +17,18 @@
             "email": "brent@nimbly.io"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https:\/\/github.com\/nimbly\/Remodel"
-        }
-    ],
     "autoload": {
         "psr-4": {
-            "Remodel\\": "src\/"
+            "Remodel\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Remodel\\Test\\": "tests\/"
+            "Remodel\\Tests\\": "tests/"
         }
     },
     "require-dev": {
-        "vimeo/psalm": "^3.0",
+        "vimeo/psalm": "^3.5",
         "phpunit/phpunit": "^8.0",
         "php-coveralls/php-coveralls": "^2.1",
         "mtdowling/jmespath.php": "^2.4",

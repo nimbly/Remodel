@@ -4,19 +4,19 @@ namespace Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Remodel\CallableTransformer;
-use Remodel\Resource\Item;
+use Remodel\Subjects\Item;
 
 /**
- * @covers Remodel\Resource\Item
+ * @covers Remodel\Subjects\Item
  * @covers Remodel\CallableTransformer
  * @covers Remodel\Transformer
- * @covers Remodel\Resource\Resource
+ * @covers Remodel\Subjects\Subject
  */
-class ResourceItemTest extends TestCase
+class SubjectItemTest extends TestCase
 {
     public function test_resource_item_transforms_to_single_array()
     {
-        $data = [
+        $data = (object) [
             "id" => 1,
             "name" => "John Doe",
             "password" => '$2y$10$EfIqopgVNY8Bdw/GiIAOl.PVMyERHG5zfE0fYh9FtWvmECS1ZWIdu',
@@ -24,16 +24,22 @@ class ResourceItemTest extends TestCase
 
         $item = new Item(
             $data,
-            new CallableTransformer(function($data){
+            new CallableTransformer(function(object $data){
 
                 return [
-                    "id" => $data['id'],
-                    "name" => $data['name'],
+                    "id" => $data->id,
+                    "name" => $data->name,
                 ];
 
             })
         );
 
-        $this->assertTrue(is_array($item->toData()));
+        $this->assertEquals(
+            [
+                "id" => 1,
+                "name" => "John Doe"
+            ],
+            $item->remodel()
+        );
     }
 }

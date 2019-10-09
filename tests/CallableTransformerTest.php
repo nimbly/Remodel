@@ -4,13 +4,13 @@ namespace Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Remodel\CallableTransformer;
-use Remodel\Resource\Item;
+use Remodel\Subjects\Item;
 
 /**
  * @covers Remodel\CallableTransformer
- * @covers Remodel\Resource\Item
+ * @covers Remodel\Subjects\Item
  * @covers Remodel\Transformer
- * @covers Remodel\Resource\Resource
+ * @covers Remodel\Subjects\Subject
  */
 class CallableTransformerTest extends TestCase
 {
@@ -39,7 +39,7 @@ class CallableTransformerTest extends TestCase
 
         $item = new Item(
             $this->getData(),
-            new CallableTransformer(function($data){
+            new CallableTransformer(function(array $data): array {
 
                 return [
                     "id" => $data['id'],
@@ -50,9 +50,9 @@ class CallableTransformerTest extends TestCase
             })
         );
 
-        $dataTransformed = $item->toData();
+        $dataTransformed = $item->remodel();
 
-        $this->assertTrue(is_array($item->toData()));
+        $this->assertTrue(\is_array($item->remodel()));
         $this->assertEquals($dataSource['id'], $dataTransformed['id']);
         $this->assertEquals($dataSource['email'], $dataTransformed['email']);
         $this->assertEquals($dataSource['name'], $dataTransformed['name']);
@@ -68,9 +68,9 @@ class CallableTransformerTest extends TestCase
             new CallableTransformer([$this, 'transform'])
         );
 
-        $dataTransformed = $item->toData();
+        $dataTransformed = $item->remodel();
 
-        $this->assertTrue(is_array($item->toData()));
+        $this->assertTrue(\is_array($item->remodel()));
         $this->assertEquals($dataSource['id'], $dataTransformed['id']);
         $this->assertEquals($dataSource['email'], $dataTransformed['email']);
         $this->assertEquals($dataSource['name'], $dataTransformed['name']);

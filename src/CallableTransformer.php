@@ -35,6 +35,6 @@ class CallableTransformer extends Transformer
      */
     public function transform($data): array
     {
-        return \call_user_func_array($this->callable, [$data]);
+        return \call_user_func($this->callable, $data);
     }
 }
