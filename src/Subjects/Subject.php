@@ -1,127 +1,132 @@
 <?php
 
-namespace Remodel\Subjects;
+namespace Nimbly\Remodel\Subjects;
 
 
-use Remodel\Transformer;
+use Nimbly\Remodel\Transformer;
+use UnexpectedValueException;
 
 /**
  * Class Subject
- * 
+ *
  * @package Remodel\Subject
  */
 abstract class Subject
 {
-    /**
-     * Data to transform.
-     *
-     * @var mixed
-     */
-    protected $data;
+	/**
+	 * Data to transform.
+	 *
+	 * @var mixed
+	 */
+	protected $data;
 
-    /**
-     * The transformer instance.
-     *
-     * @var Transformer
-     */
-    protected $transformer;
+	/**
+	 * The transformer instance.
+	 *
+	 * @var Transformer|null
+	 */
+	protected $transformer;
 
-    /**
-     * Remodel subject(s) into desired output.
-     *
-     * @return mixed|null
-     */
-    abstract public function remodel();
+	/**
+	 * Remodel subject(s) into desired output.
+	 *
+	 * @return mixed|null
+	 */
+	abstract public function remodel();
 
-    /**
-     * Get the transformer instance.
-     * 
-     * @return Transformer
-     */
-    public function getTransformer(): ?Transformer
-    {
-        return $this->transformer;
-    }
+	/**
+	 * Get the transformer instance.
+	 *
+	 * @return Transformer
+	 */
+	public function getTransformer(): ?Transformer
+	{
+		return $this->transformer;
+	}
 
-    /**
-     * Map the includes (default and user-provided) into array indexed by top-level include referencing the nested
-     * includes (if any).
-     * 
-     * @param array<string> $defaultIncludes
-     * @param array<string> $userIncludes
-     * @return array<string, array<string>>
-     */
-    protected function mapIncludes(array $defaultIncludes, array $userIncludes): array
-    {
-        $includes = \array_unique(\array_merge($defaultIncludes, $userIncludes));
+	/**
+	 * Map the includes (default and user-provided) into array indexed by top-level include referencing the nested
+	 * includes (if any).
+	 *
+	 * @param array<string> $defaultIncludes
+	 * @param array<string> $userIncludes
+	 * @return array<string,array<string>>
+	 */
+	protected function mapIncludes(array $defaultIncludes, array $userIncludes): array
+	{
+		$includes = \array_unique(\array_merge($defaultIncludes, $userIncludes));
 
-        $mappedIncludes = [];
+		$mappedIncludes = [];
 
-        // Re-work the includes, indexed by top-level referencing the nested includes
-        foreach( $includes as $include ){
+		// Re-work the includes, indexed by top-level referencing the nested includes
+		foreach( $includes as $include ){
 
-            // Does this include reference a nested-include
-            if( ($pos = \strpos($include, '.')) !== false ){
-                $index = \substr($include, 0, $pos);
-                $nestedInclude = \substr($include, $pos+1);
-            } else {
-                $index = $include;
-                $nestedInclude = null;
-            }
+			// Does this include reference a nested-include
+			if( ($pos = \strpos($include, '.')) !== false ){
+				$index = \substr($include, 0, $pos);
+				$nestedInclude = \substr($include, $pos+1);
+			} else {
+				$index = $include;
+				$nestedInclude = null;
+			}
 
-            // This index doesn't exist yet, create it and set it to an empty array
-            if( \array_key_exists($index, $mappedIncludes) === false ){
-                $mappedIncludes[$index] = [];
-            }
+			// This index doesn't exist yet, create it and set it to an empty array
+			if( \array_key_exists($index, $mappedIncludes) === false ){
+				$mappedIncludes[$index] = [];
+			}
 
-            // We have a nested include, add it to the array
-            if( $nestedInclude &&
-                \in_array($nestedInclude, $mappedIncludes[$index]) === false ){
-                $mappedIncludes[$index][] = $nestedInclude;
-            }
-        }
+			// We have a nested include, add it to the array
+			if( $nestedInclude &&
+				\in_array($nestedInclude, $mappedIncludes[$index]) === false ){
+				$mappedIncludes[$index][] = $nestedInclude;
+			}
+		}
 
-        return $mappedIncludes;
-    }
+		return $mappedIncludes;
+	}
 
-    /**
-     * Process all the includes defined for the transformer.
-     * 
-     * @param mixed $object
-     * @param array $includes
-     * @return array
-     */
-    protected function processIncludes($object, $includes): array
-    {
-        $data = [];
+	/**
+	 * Process all the includes defined for the transformer.
+	 *
+	 * @param mixed $object
+	 * @param array<string,array<string>> $includes
+	 * @return array
+	 */
+	protected function processIncludes($object, array $includes): array
+	{
+		$data = [];
 
-        // Process the includes
-        foreach( $includes as $include => $nested ){
+		if( empty($this->transformer) ){
+			throw new UnexpectedValueException("Transformer instance has not been given.");
+		}
 
-            $includeMethod = "{$include}Include";
+		// Process the includes
+		foreach( $includes as $include => $nested ){
 
-            if( \method_exists($this->transformer, $includeMethod) ){
+			$includeMethod = "{$include}Include";
 
-                $subject = \call_user_func([$this->transformer, $includeMethod], $object);
+			if( \method_exists($this->transformer, $includeMethod) ){
 
-                if( $subject === null ){
-                    continue;
-                }
+				$subject = \call_user_func([$this->transformer, $includeMethod], $object);
 
-                if( $subject instanceof static ){
+				if( $subject === null ){
+					continue;
+				}
 
-                    if( $subject->transformer ){
-                        $subject->transformer->setIncludes($nested);
-                    }
+				if( $subject instanceof static ){
 
-                    $data[$include] = $subject->remodel();
-                }
-                else {
-                    $data[$include] = $subject;
-                }
-            }
-        }
+					if( $subject->transformer ){
+						$subject->transformer->setIncludes($nested);
+					}
 
-        return $data;
-    }
+					$data[$include] = $subject->remodel();
+				}
+				else {
+					$data[$include] = $subject;
+				}
+			}
+		}
+
+		return $data;
+	}
 }

@@ -1,20 +1,20 @@
 <?php
 
-namespace Remodel\Tests;
+namespace Nimbly\Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Remodel\CallableTransformer;
-use Remodel\Subjects\Item;
+use Nimbly\Remodel\CallableTransformer;
+use Nimbly\Remodel\Subjects\Item;
 
 /**
- * @covers Remodel\Subjects\Item
- * @covers Remodel\CallableTransformer
- * @covers Remodel\Transformer
- * @covers Remodel\Subjects\Subject
+ * @covers Nimbly\Remodel\Subjects\Item
+ * @covers Nimbly\Remodel\CallableTransformer
+ * @covers Nimbly\Remodel\Transformer
+ * @covers Nimbly\Remodel\Subjects\Subject
  */
 class SubjectItemTest extends TestCase
 {
-    public function test_resource_item_transforms_to_single_array()
+    public function test_resource_item_transforms_to_single_array(): void
     {
         $data = (object) [
             "id" => 1,

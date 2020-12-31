@@ -1,54 +1,58 @@
 <?php
 
-namespace Remodel\Subjects;
+namespace Nimbly\Remodel\Subjects;
 
 
-use Remodel\Transformer;
+use Nimbly\Remodel\Transformer;
 
 /**
  * An Item represents a single instance of something.
- * 
+ *
  * @package Remodel\Subject
  */
 class Item extends Subject
 {
-    /**
-     * @param mixed $data
-     * @param Transformer $transformer
-     */
-    public function __construct($data, Transformer $transformer)
-    {
-        $this->data = $data;
-        $this->transformer = $transformer;
-    }
+	/**
+	 * Transformer instance.
+	 *
+	 * @var Transformer
+	 */
+	protected $transformer;
 
-    /**
-     * @inheritDoc
-     */
-    public function remodel()
-    {
-        // Transform the object
-        if( \method_exists($this->transformer, 'transform') ){
-            /**
-             * @psalm-suppress InvalidArgument
-             */            
-            $data = \call_user_func([$this->transformer, 'transform'], $this->data);
-        }
-        else {
-            return null;
-        }
+	/**
+	 * @param mixed $data
+	 * @param Transformer $transformer
+	 */
+	public function __construct($data, Transformer $transformer)
+	{
+		$this->data = $data;
+		$this->transformer = $transformer;
+	}
 
-        // Get needed includes
-        $includes = $this->mapIncludes(
-            $this->transformer->getDefaultIncludes(),
-            $this->transformer->getUserIncludes()
-        );
+	/**
+	 * @inheritDoc
+	 */
+	public function remodel()
+	{
+		// Transform the object
+		if( \method_exists($this->transformer, "transform") ){
+			$data = \call_user_func([$this->transformer, "transform"], $this->data);
+		}
+		else {
+			return null;
+		}
 
-        // Process includes
-        if( !empty($includes) ){
-            $data = \array_merge($data, $this->processIncludes($this->data, $includes));
-        }
+		// Get needed includes
+		$includes = $this->mapIncludes(
+			$this->transformer->getDefaultIncludes(),
+			$this->transformer->getUserIncludes()
+		);
 
-        return $data;
-    }
+		// Process includes
+		if( !empty($includes) ){
+			$data = \array_merge($data, $this->processIncludes($this->data, $includes));
+		}
+
+		return $data;
+	}
 }

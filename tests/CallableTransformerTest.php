@@ -1,16 +1,16 @@
 <?php
 
-namespace Remodel\Tests;
+namespace Nimbly\Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Remodel\CallableTransformer;
-use Remodel\Subjects\Item;
+use Nimbly\Remodel\CallableTransformer;
+use Nimbly\Remodel\Subjects\Item;
 
 /**
- * @covers Remodel\CallableTransformer
- * @covers Remodel\Subjects\Item
- * @covers Remodel\Transformer
- * @covers Remodel\Subjects\Subject
+ * @covers Nimbly\Remodel\CallableTransformer
+ * @covers Nimbly\Remodel\Subjects\Item
+ * @covers Nimbly\Remodel\Transformer
+ * @covers Nimbly\Remodel\Subjects\Subject
  */
 class CallableTransformerTest extends TestCase
 {
@@ -33,7 +33,7 @@ class CallableTransformerTest extends TestCase
         ];
     }
 
-    public function test_closure_is_supported()
+    public function test_closure_is_supported(): void
     {
         $dataSource = $this->getData();
 
@@ -59,7 +59,7 @@ class CallableTransformerTest extends TestCase
         $this->assertFalse(isset($dataTransformed['password']));
     }
 
-    public function test_callable_is_supported()
+    public function test_callable_is_supported(): void
     {
         $dataSource = $this->getData();
 

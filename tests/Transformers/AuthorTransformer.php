@@ -1,8 +1,8 @@
 <?php
 
-namespace Remodel\Tests\Transformers;
+namespace Nimbly\Remodel\Tests\Transformers;
 
-use Remodel\Transformer;
+use Nimbly\Remodel\Transformer;
 
 class AuthorTransformer extends Transformer
 {

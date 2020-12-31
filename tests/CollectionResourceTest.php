@@ -1,21 +1,21 @@
 <?php
 
-namespace Remodel\Tests;
+namespace Nimbly\Remodel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Remodel\CallableTransformer;
-use Remodel\Subjects\Collection;
+use Nimbly\Remodel\CallableTransformer;
+use Nimbly\Remodel\Subjects\Collection;
 
 /**
- * @covers Remodel\Subjects\Collection
- * @covers Remodel\Subjects\Item
- * @covers Remodel\Subjects\Subject
- * @covers Remodel\CallableTransformer
- * @covers Remodel\Transformer
+ * @covers Nimbly\Remodel\Subjects\Collection
+ * @covers Nimbly\Remodel\Subjects\Item
+ * @covers Nimbly\Remodel\Subjects\Subject
+ * @covers Nimbly\Remodel\CallableTransformer
+ * @covers Nimbly\Remodel\Transformer
  */
 class CollectionResourceTest extends TestCase
 {
-    public function test_collection_transforms_to_set_of_arrays()
+    public function test_collection_transforms_to_set_of_arrays(): void
     {
         $data = [
             [

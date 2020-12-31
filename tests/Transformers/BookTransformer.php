@@ -1,10 +1,10 @@
 <?php
 
-namespace Remodel\Tests\Transformers;
+namespace Nimbly\Remodel\Tests\Transformers;
 
-use Remodel\Subjects\Collection;
-use Remodel\Subjects\Item;
-use Remodel\Transformer;
+use Nimbly\Remodel\Subjects\Collection;
+use Nimbly\Remodel\Subjects\Item;
+use Nimbly\Remodel\Transformer;
 
 
 class BookTransformer extends Transformer
@@ -20,7 +20,7 @@ class BookTransformer extends Transformer
             "isbn" => $book->isbn
         ];
     }
-    
+
     public function authorInclude(object $book): Item
     {
         return $this->item($book->author, new AuthorTransformer);

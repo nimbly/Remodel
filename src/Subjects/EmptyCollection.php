@@ -1,20 +1,20 @@
 <?php
 
-namespace Remodel\Subjects;
+namespace Nimbly\Remodel\Subjects;
 
 
 /**
  * An EmptyCollection Subject represents an empty array.
- * 
+ *
  * @package Remode\Subject
  */
 class EmptyCollection extends Subject
 {
-    /**
-     * @inheritDoc
-     */
-    public function remodel()
-    {
-        return [];
-    }
+	/**
+	 * @inheritDoc
+	 */
+	public function remodel()
+	{
+		return [];
+	}
 }

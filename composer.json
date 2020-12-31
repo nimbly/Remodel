@@ -4,11 +4,11 @@
     "keywords": [
         "api",
         "response",
-        "transformer"        
+        "transformer"
     ],
     "type": "library",
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.3|^8.0"
     },
     "license": "MIT",
     "authors": [
@@ -19,17 +19,17 @@
     ],
     "autoload": {
         "psr-4": {
-            "Remodel\\": "src/"
+            "Nimbly\\Remodel\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Remodel\\Tests\\": "tests/"
+            "Nimbly\\Remodel\\Tests\\": "tests/"
         }
     },
     "require-dev": {
-        "vimeo/psalm": "^3.5",
-        "phpunit/phpunit": "^8.0",
+        "vimeo/psalm": "^4.0",
+        "phpunit/phpunit": "^9.0",
         "php-coveralls/php-coveralls": "^2.1",
         "mtdowling/jmespath.php": "^2.4",
         "fzaninotto/faker": "^1.8",
