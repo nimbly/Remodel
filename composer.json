@@ -31,8 +31,6 @@
         "vimeo/psalm": "^4.0",
         "phpunit/phpunit": "^9.0",
         "php-coveralls/php-coveralls": "^2.1",
-        "mtdowling/jmespath.php": "^2.4",
-        "fzaninotto/faker": "^1.8",
         "symfony/var-dumper": "^4.2"
     }
 }
