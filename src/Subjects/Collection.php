@@ -3,6 +3,7 @@
 namespace Nimbly\Remodel\Subjects;
 
 use Nimbly\Remodel\Transformer;
+use RuntimeException;
 use Traversable;
 
 /**
@@ -36,14 +37,13 @@ class Collection extends Subject
 	{
 		$transformedData = [];
 
+		if( !\method_exists($this->transformer, "transform") ){
+			throw new RuntimeException("Transformer does not have a transform() method.");
+		}
+
 		foreach( $this->data as $subject ){
 
-			if( \method_exists($this->transformer, "transform") ){
-				$data = \call_user_func([$this->transformer, "transform"], $subject);
-			}
-			else {
-				continue;
-			}
+			$data = \call_user_func([$this->transformer, "transform"], $subject);
 
 			// Get needed includes
 			$includes = $this->mapIncludes(

@@ -4,6 +4,7 @@ namespace Nimbly\Remodel\Subjects;
 
 
 use Nimbly\Remodel\Transformer;
+use RuntimeException;
 
 /**
  * An Item represents a single instance of something.
@@ -34,13 +35,11 @@ class Item extends Subject
 	 */
 	public function remodel()
 	{
-		// Transform the object
-		if( \method_exists($this->transformer, "transform") ){
-			$data = \call_user_func([$this->transformer, "transform"], $this->data);
+		if( !\method_exists($this->transformer, "transform") ){
+			throw new RuntimeException("Transformer does not have a transform() method.");
 		}
-		else {
-			return null;
-		}
+
+		$data = \call_user_func([$this->transformer, "transform"], $this->data);
 
 		// Get needed includes
 		$includes = $this->mapIncludes(
