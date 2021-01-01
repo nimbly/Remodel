@@ -113,9 +113,9 @@ abstract class Subject
 					continue;
 				}
 
-				if( $subject instanceof static ){
+				if( $subject instanceof Subject ){
 
-					if( $subject->transformer ){
+					if( $subject->transformer && !empty($nested) ){
 						$subject->transformer->setIncludes($nested);
 					}
 
