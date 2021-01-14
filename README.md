@@ -144,3 +144,12 @@ You can pass run-time user supplied includes into the Transformer instance using
 $transformer = new BookTransformer;
 $transformer->setIncludes(["author", "publisher"]);
 ```
+
+## Overriding default includes at run time
+
+You can override the default includes at runtime by calling the `setDefaultIncludes` method.
+
+```php
+$transformer = new BookTransformer;
+$transformer->setDefaultIncludes(["comments"]);
+```

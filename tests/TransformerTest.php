@@ -149,4 +149,14 @@ class TransformerTest extends TestCase
 			$transformer->emptyObject()
 		);
 	}
+
+	public function test_set_default_includes(): void
+	{
+		$transformer = new BookTransformer;
+		$transformer->setDefaultIncludes([]);
+
+		$this->assertEmpty(
+			$transformer->getDefaultIncludes()
+		);
+	}
 }

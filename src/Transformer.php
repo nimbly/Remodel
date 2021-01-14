@@ -49,6 +49,17 @@ abstract class Transformer
 	}
 
 	/**
+	 * Set the transformer's default includes.
+	 *
+	 * @param array $includes
+	 * @return void
+	 */
+	public function setDefaultIncludes(array $includes): void
+	{
+		$this->defaultIncludes = $includes;
+	}
+
+	/**
 	 * Get the transformer's configured default includes.
 	 *
 	 * @return array
